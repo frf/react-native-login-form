@@ -6,10 +6,34 @@ import {
     View,
     TextInput,
     TouchableOpacity,
-    StatusBar
+    StatusBar,
 } from 'react-native';
 
 export default class Login extends Component {
+
+    constructor(props) {
+        super(props);
+        state = {
+            email: '',
+            password: ''
+        }
+    }
+
+    handleEmail = (text) => {
+        this.setState({ email: text })
+    }
+    handlePassword = (text) => {
+        this.setState({ password: text })
+    }
+    login = (email, pass) => {
+        alert('email: ' + email + ' password: ' + pass);
+
+        fetch('http://localhost:8000/api/access_token',{email:email,password:pass})
+            .then((response: Response) => {
+                console.log(response.json().token);
+            });
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -25,6 +49,7 @@ export default class Login extends Component {
                     autocapitalize="none"
                     autoCorrect={false}
                     onSubmitEditing={() => this.passwordInput.focus()}
+                    onChangeText = {this.handleEmail}
                 />
                 <TextInput
                     placeholder="Passwrod"
@@ -33,9 +58,10 @@ export default class Login extends Component {
                     style={styles.input}
                     secureTextEntry
                     ref={(input) => this.passwordInput = input}
+                    onChangeText = {this.handlePassword}
                 />
 
-                <TouchableOpacity style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.buttonContainer} onPress = {() => this.login(this.state.email, this.state.password)}>
                     <Text style={styles.buttonText}>LOGIN</Text>
                 </TouchableOpacity>
             </View>
